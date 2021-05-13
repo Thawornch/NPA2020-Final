@@ -8,33 +8,33 @@ from pprint import pprint
 import xml.dom.minidom
 import xmltodict
 
-class WebexTeam:
-    def bearertoken(self, bearer):
-        self.bearer = bearer
-        self.auth = {"Content-Type":"application/json", "Authorization":"Bearer {}".format(self.bearer)}
 
-    def requestroomId(self, roomName):
-        webex_url = "https://webexapis.com/v1/rooms"
-        webex_response = requests.get(url=webex_url, headers=self.auth).json()['items']
-        for room in webex_response:
-            if room['title'] == roomName:
-                return room['id']
-        return "Not found!"
+def bearertoken(self, bearer):
+    self.bearer = bearer
+    self.auth = {"Content-Type":"application/json", "Authorization":"Bearer {}".format(self.bearer)}
 
-    def setroomId(self, roomId):
-        self.roomId = roomId
+def requestroomId(self, roomName):
+    webex_url = "https://webexapis.com/v1/rooms"
+    webex_response = requests.get(url=webex_url, headers=self.auth).json()['items']
+    for room in webex_response:
+        if room['title'] == roomName:
+            return room['id']
+    return "Not found!"
 
-    def getLastestMsg(self, data='text'):
-        webex_url = "https://webexapis.com/v1/messages"
-        webex_param = {"roomId": self.roomId}
-        webex_response = requests.get(url=webex_url, headers=self.auth, params=webex_param).json()
-        return webex_response['items'][0][data]
+def setroomId(self, roomId):
+    self.roomId = roomId
 
-    def sendMsg(self, text):
-        webex_url = "https://webexapis.com/v1/messages"
-        webex_param = {"roomId":self.roomId, 'text':text}
-        webex_response = requests.post(url=webex_url, headers=self.auth, json=webex_param).json()
-        return webex_response
+def LastedMsg(self, data='text'):
+    webex_url = "https://webexapis.com/v1/messages"
+    webex_param = {"roomId": self.roomId}
+    webex_response = requests.get(url=webex_url, headers=self.auth, params=webex_param).json()
+    return webex_response['items'][0][data]
+
+def sendMsg(self, text):
+    webex_url = "https://webexapis.com/v1/messages"
+    webex_param = {"roomId":self.roomId, 'text':text}
+    webex_response = requests.post(url=webex_url, headers=self.auth, json=webex_param).json()
+    return webex_response
 
 webExobj = WebexTeam.bearertoken
 roomId = WebexTeam.requestroomId(roomName="NPA2020@ITKMITL")
@@ -64,9 +64,6 @@ if roomId != "Not found!":
             </filter>
         """
         netconf_reply = m.get_config('running', netconf_filter)
-        resp_dict = xmltodict.parse(str(netconf_reply), dict_constructor=dict)['rpc-reply']['data']
-        int_status = resp_dict['interfaces-state']['interface']
-        return int_status['oper-status']
 
     while 1:
         msg = WebexTeam.getLastestMsg(data='text')
